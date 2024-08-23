@@ -1,0 +1,98 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ufpi-provider-steward-1-node
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: ufpi-ns
+spec:
+  releaseName: ufpi-provider-steward-1-node
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/hyperledger-indy/charts/indy-node
+    sourceRef:
+      kind: GitRepository
+      name: flux-local
+      namespace: flux-local
+  values:
+    metadata:
+      name: ufpi-provider-steward-1-node
+      namespace: ufpi-ns
+    proxy:
+      provider: none
+    network:
+      name: bevel
+    organization:
+      name: ufpi
+    add_new_org: False
+    image:
+      pullSecret: regcred
+      pullPolicy: IfNotPresent
+      initContainer:
+        name: ufpi-provider-steward-1-node-init
+        repository: alpine:3.9.4
+      cli:
+        name: ufpi-provider-steward-1-node-ledger-txn
+        repository: ghcr.io/hyperledger/bevel-indy-ledger-txn:latest
+        pullSecret: regcred
+      indyNode:
+        name: ufpi-provider-steward-1-node
+        repository: ghcr.io/hyperledger/bevel-indy-node:1.12.6
+    node:
+      name: ufpi-provider-steward-1-node
+      ip: 0.0.0.0
+      publicIp: 192.168.49.2
+      port: 15711
+      targetPort: 15711
+      ambassadorPort: 15711
+    client:
+      name: ufpi-provider-steward-1-node
+      publicIp: 192.168.49.2
+      ip: 0.0.0.0
+      port: 15712
+      targetPort: 15712
+      ambassadorPort: 15712
+    service:
+      type: NodePort
+      ports:
+        nodePort: 15711
+        nodeTargetPort: 15711
+        clientPort: 15712
+        clientTargetPort: 15712
+    configmap:
+      indyConfig: |-
+        NETWORK_NAME = 'bevel'
+        # Enable stdout logging
+        enableStdOutLogging = True
+        logRotationBackupCount = 10
+        # Directory to store ledger.
+        LEDGER_DIR = '/var/lib/indy/data'
+        # Directory to store logs.
+        LOG_DIR = '/var/log/indy'
+        # Directory to store keys.
+        KEYS_DIR = '/var/lib/indy/keys'
+        # Directory to store genesis transactions files.
+        GENESIS_DIR = '/var/lib/indy/genesis'
+        # Directory to store backups.
+        BACKUP_DIR = '/var/lib/indy/backup'
+        # Directory to store plugins.
+        PLUGINS_DIR = '/var/lib/indy/plugins'
+        # Directory to store node info.
+        NODE_INFO_DIR = '/var/lib/indy/data'
+    ambassador:
+      disabled: true
+    vault:
+      address: http://10.126.1.123:8200
+      serviceAccountName: ufpi-provider-steward-1-vault-auth
+      keyPath: /keys/bevel/keys/provider-steward-1
+      authPath: kubernetes-ufpi-provider-steward-1-auth
+      nodeId: provider-steward-1
+      role: ro
+    storage:
+      data:
+        storagesize: 3Gi
+        storageClassName: ufpi-bevel-storageclass
+      keys:
+        storagesize: 3Gi
+        storageClassName: ufpi-bevel-storageclass
