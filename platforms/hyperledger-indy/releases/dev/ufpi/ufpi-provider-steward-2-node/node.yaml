@@ -42,13 +42,13 @@ spec:
     node:
       name: ufpi-provider-steward-2-node
       ip: 0.0.0.0
-      publicIp: 192.168.49.2
+      publicIp: 10.126.1.123
       port: 15721
       targetPort: 15721
       ambassadorPort: 15721
     client:
       name: ufpi-provider-steward-2-node
-      publicIp: 192.168.49.2
+      publicIp: 10.126.1.123
       ip: 0.0.0.0
       port: 15722
       targetPort: 15722
