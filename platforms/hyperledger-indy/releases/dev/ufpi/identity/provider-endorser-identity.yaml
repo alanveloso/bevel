@@ -1,0 +1,48 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ufpi-provider-endorser-transaction
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: ufpi-ns
+spec:
+  releaseName: ufpi-provider-endorser-transaction
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/hyperledger-indy/charts/indy-ledger-txn
+    sourceRef:
+      kind: GitRepository
+      name: flux-local
+      namespace: flux-local
+  values:
+    metadata:
+      name: ufpi-provider-endorser-transaction
+      namespace: ufpi-ns
+    network:
+      name: bevel
+    image:
+      cli:
+        name: ufpi
+        repository: ghcr.io/hyperledger/bevel-indy-ledger-txn:latest
+        pullSecret: regcred
+        pullPolicy: IfNotPresent
+    vault:
+      address: http://10.126.1.123:8200
+      role: rw
+      serviceAccountName: ufpi-admin-vault-auth
+      auth_path: kubernetes-ufpi-admin-auth
+    organization:
+      name: ufpi
+      adminIdentity:
+        name: authority-trustee
+        did: DGfgzgceqhv9R2rxiBu4Mv
+        path: ufpa/data/trustees
+      newIdentity:
+        name: provider-endorser
+        role: ENDORSER
+        did: LNBpxAAxP262Kyac8wp3P2
+        verkey: BZB9Q91kTLixwj8eRx513ptJXh95F9mn6noiiK9BMgvN
+        path: ufpi/data/endorsers
+    node:
+      name: ufpi
