@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ufpi-dtg
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: ufpi-ns
+spec:
+  releaseName: ufpi-dtg
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/hyperledger-indy/charts/indy-domain-genesis
+    sourceRef:
+      kind: GitRepository
+      name: flux-local
+      namespace: flux-local
+  values:
+    metadata:
+      name: ufpi-dtg
+      namespace: ufpi-ns
+    organization:
+      name: ufpi
+    configmap:
+      domainGenesis: |-
+        {"reqSignature":{},"txn":{"data":{"alias":"authority-trustee","dest":"6E88xmCbYQ52vZku5Tkusf","role":"0","verkey":"3rDKQg9dSxr8A8FtkQmukGNa31XUukzuHSiz28wpFYQ7"},"metadata":{},"type":"1"},"txnMetadata":{"seqNo":1},"ver":"1"}
+        {"reqSignature":{},"txn":{"data":{"alias":"provider-steward-1","dest":"mrHRRwqV4QB1JHjPBAHd1","role":"2","verkey":"RSngtQDQKMHPa4W8n9aKzHVDpViwG2AYUfwsrpSBPay"},"metadata":{"from":"6E88xmCbYQ52vZku5Tkusf"},"type":"1"},"txnMetadata":{"seqNo":2},"ver":"1"}
+        {"reqSignature":{},"txn":{"data":{"alias":"provider-steward-2","dest":"UZFWDNqVxLeEWq5kzub1Cm","role":"2","verkey":"G26qSrx5qLgEMQCBQ9ZDkKNzeTvhkTXEXxDxNjdNwEtp"},"metadata":{"from":"6E88xmCbYQ52vZku5Tkusf"},"type":"1"},"txnMetadata":{"seqNo":3},"ver":"1"}
+        {"reqSignature":{},"txn":{"data":{"alias":"partner-steward-1","dest":"5n3MqrA6afKUUmeY3ZK9ox","role":"2","verkey":"3bzoWveLPWF2SW9aqAaCJqcemWLu8ah74cdNd7eEDCV8"},"metadata":{"from":"6E88xmCbYQ52vZku5Tkusf"},"type":"1"},"txnMetadata":{"seqNo":4},"ver":"1"}
+        {"reqSignature":{},"txn":{"data":{"alias":"partner-steward-2","dest":"8xnJb77UfjyR39bdMFRx6i","role":"2","verkey":"5Lgp1ush4Jm7Ho6fWLFhRPUUzDX1SibhMk7VqULNpeHA"},"metadata":{"from":"6E88xmCbYQ52vZku5Tkusf"},"type":"1"},"txnMetadata":{"seqNo":5},"ver":"1"}
