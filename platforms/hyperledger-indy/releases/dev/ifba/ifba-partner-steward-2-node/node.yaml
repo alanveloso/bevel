@@ -1,0 +1,98 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ifba-partner-steward-2-node
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: ifba-ns
+spec:
+  releaseName: ifba-partner-steward-2-node
+  interval: 1m
+  chart:
+   spec:
+    chart: platforms/hyperledger-indy/charts/indy-node
+    sourceRef:
+      kind: GitRepository
+      name: flux-local
+      namespace: flux-local
+  values:
+    metadata:
+      name: ifba-partner-steward-2-node
+      namespace: ifba-ns
+    proxy:
+      provider: none
+    network:
+      name: bevel
+    organization:
+      name: ifba
+    add_new_org: False
+    image:
+      pullSecret: regcred
+      pullPolicy: IfNotPresent
+      initContainer:
+        name: ifba-partner-steward-2-node-init
+        repository: alpine:3.9.4
+      cli:
+        name: ifba-partner-steward-2-node-ledger-txn
+        repository: ghcr.io/hyperledger/bevel-indy-ledger-txn:latest
+        pullSecret: regcred
+      indyNode:
+        name: ifba-partner-steward-2-node
+        repository: ghcr.io/hyperledger/bevel-indy-node:1.12.6
+    node:
+      name: ifba-partner-steward-2-node
+      ip: 0.0.0.0
+      publicIp: 192.168.49.2
+      port: 15741
+      targetPort: 15741
+      ambassadorPort: 15741
+    client:
+      name: ifba-partner-steward-2-node
+      publicIp: 192.168.49.2
+      ip: 0.0.0.0
+      port: 15742
+      targetPort: 15742
+      ambassadorPort: 15742
+    service:
+      type: NodePort
+      ports:
+        nodePort: 15741
+        nodeTargetPort: 15741
+        clientPort: 15742
+        clientTargetPort: 15742
+    configmap:
+      indyConfig: |-
+        NETWORK_NAME = 'bevel'
+        # Enable stdout logging
+        enableStdOutLogging = True
+        logRotationBackupCount = 10
+        # Directory to store ledger.
+        LEDGER_DIR = '/var/lib/indy/data'
+        # Directory to store logs.
+        LOG_DIR = '/var/log/indy'
+        # Directory to store keys.
+        KEYS_DIR = '/var/lib/indy/keys'
+        # Directory to store genesis transactions files.
+        GENESIS_DIR = '/var/lib/indy/genesis'
+        # Directory to store backups.
+        BACKUP_DIR = '/var/lib/indy/backup'
+        # Directory to store plugins.
+        PLUGINS_DIR = '/var/lib/indy/plugins'
+        # Directory to store node info.
+        NODE_INFO_DIR = '/var/lib/indy/data'
+    ambassador:
+      disabled: true
+    vault:
+      address: http://10.126.1.123:8200
+      serviceAccountName: ifba-partner-steward-2-vault-auth
+      keyPath: /keys/bevel/keys/partner-steward-2
+      authPath: kubernetes-ifba-partner-steward-2-auth
+      nodeId: partner-steward-2
+      role: ro
+    storage:
+      data:
+        storagesize: 3Gi
+        storageClassName: ifba-bevel-storageclass
+      keys:
+        storagesize: 3Gi
+        storageClassName: ifba-bevel-storageclass
