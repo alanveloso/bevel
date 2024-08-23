@@ -36,13 +36,13 @@ spec:
       name: ufpi
       adminIdentity:
         name: authority-trustee
-        did: 6E88xmCbYQ52vZku5Tkusf
+        did: 3fyyemA6fAGPbjeetsnuJL
         path: ufpa/data/trustees
       newIdentity:
         name: provider-endorser
         role: ENDORSER
-        did: 7MksMgefUV3pZYKbhDJsM5
-        verkey: 4Tz7gLAcEA9M42pm6CtK3GQqfq4XBRPVxfWPbYpxPYAj
+        did: TEYnzNDJKrbjU81ZHCJKYr
+        verkey: FJJ8vrU4Uot4bN5Vrqish3HtpD5ypNRnA3f8fz1ztz96
         path: ufpi/data/endorsers
     node:
       name: ufpi
