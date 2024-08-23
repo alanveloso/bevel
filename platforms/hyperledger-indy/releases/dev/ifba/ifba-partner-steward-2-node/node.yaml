@@ -42,13 +42,13 @@ spec:
     node:
       name: ifba-partner-steward-2-node
       ip: 0.0.0.0
-      publicIp: 10.126.1.123
+      publicIp: 192.168.49.2
       port: 15741
       targetPort: 15741
       ambassadorPort: 15741
     client:
       name: ifba-partner-steward-2-node
-      publicIp: 10.126.1.123
+      publicIp: 192.168.49.2
       ip: 0.0.0.0
       port: 15742
       targetPort: 15742
